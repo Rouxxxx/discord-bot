@@ -1,33 +1,28 @@
-const { Client, Intents } = require('discord.js');
-const { token } = require('./config.json');
+import { Client, Intents } from 'discord.js';
+import json from './config.json' assert { type: 'json' }
+
+import { ping } from './commands/ping.js';
+import { shutdown } from './commands/shutdown.js';
+import { registerLoLAcc } from './commands/registerLoLAcc.js';
 
 // Create a new client instance
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 client.once('ready', () => {
-	console.log('Ready!');
+    console.log('Ready!');
 });
 
 client.on('interactionCreate', async interaction => {
-	if (!interaction.isCommand()) return;
+    if (!interaction.isCommand()) return;
 
-	const { commandName, options } = interaction;
-    
+    const { commandName, options } = interaction;
 
-	if (commandName === 'ping') {
-        var date = Math.round((new Date().getTime() - interaction.createdAt.getTime()) / 10);
-		await interaction.reply(`Pong! **${date}ms**`);
-	} else if (commandName === 'server') {
-		await interaction.reply('Server info.');
-	} else if (commandName === 'user') {
-		await interaction.reply('User info.');
-	}
-    else if (commandName === 'shutdown') {
-        await interaction.reply('Shutting down...');
-        client.destroy();
-	}
+    if (commandName === 'ping') await ping(interaction)
+    /*else if (commandName === 'server') { await interaction.reply('Server info.');}
+    else if (commandName === 'user') {await interaction.reply('User info.');}*/
+    else if (commandName === 'shutdown') await shutdown(client, interaction)
+    else if (commandName === 'registerlol') await registerLoLAcc(interaction, options)
 });
 
-
-//Bot login
-client.login(token);
+//Bot start using token
+client.login(json.token);
