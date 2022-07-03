@@ -1,13 +1,13 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
-//import { clientId, guildId, token } = require('./config.json');
+
 import json from './config.json' assert { type: 'json' };
 
 const commands = [
     new SlashCommandBuilder().setName('ping').setDescription('Replies with pong!'),
-    new SlashCommandBuilder().setName('server').setDescription('Replies with server info!'),
-    new SlashCommandBuilder().setName('user').setDescription('Replies with user info!'),
+    //new SlashCommandBuilder().setName('server').setDescription('Replies with server info!'),
+    //new SlashCommandBuilder().setName('user').setDescription('Replies with user info!'),
     new SlashCommandBuilder().setName('shutdown').setDescription('Stops me!'),
     new SlashCommandBuilder()
         .setName('registerlol')
@@ -15,7 +15,9 @@ const commands = [
         .addStringOption(option =>
             option.setName('input')
                 .setDescription('Your username')
-                .setRequired(true))
+                .setRequired(true)),
+    new SlashCommandBuilder().setName('getgame').setDescription("Infos about your current LoL game"),
+
 ]
     .map(command => command.toJSON());
 

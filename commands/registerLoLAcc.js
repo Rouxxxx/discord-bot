@@ -1,6 +1,4 @@
-
 import * as fs from 'fs';
-import editJsonFile from 'edit-json-file';
 
 /**
  * @param {CommandInteraction<CacheType>} interaction command's entry point
@@ -8,6 +6,12 @@ import editJsonFile from 'edit-json-file';
  */
 
 async function registerLoLAcc(interaction, options) {
+    let path = './data/lol-accs.json'
+    let userId = interaction.member.id
+    let userString = userId.toString();
+    let json = {}
+
+
     if (options == undefined || options.data.length !== 1) {
         await interaction.reply('Error with number of arguments given. Aborting.');
         return;
@@ -17,23 +21,18 @@ async function registerLoLAcc(interaction, options) {
         await interaction.reply('Error with name specified. Return');
         return;
     }
-    register(interaction.member.id, name)
 
-    await interaction.reply("Username updated!");
-}
+    if (fs.existsSync(path)) {
+        json = JSON.parse(fs.readFileSync(path));
+        fs.unlinkSync(path, () => { });
+    }
 
+    let responseString = (userString in json) ? "Username updated!" : "Username created!";
 
-/**
- * @param {Number} userId user running command
- * @param {String} name user's LoL account
- */
-function register(userId, name) {
-    fs.mkdir('data', (err) => { });
-    let file = editJsonFile(`./data/lol-accs.json`, {
-        autosave: true
-    });
+    json[userString] = name;
+    fs.writeFileSync(path, JSON.stringify(json, null, 4), function (err) { });
 
-    file.set(userId.toString(), name);
+    await interaction.reply(responseString);
 }
 
 export { registerLoLAcc }
